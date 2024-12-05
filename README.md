@@ -1,6 +1,9 @@
 # Simon-Game
 This is a term project that I built for the class ENSE 352: Fundamentals of Computer Systems Architecture
 
+# Video Showcase
+https://www.youtube.com/watch?v=5UjCeziL5CU&t=4s&ab_channel=AaronB
+
 
 
 **Important Note**
@@ -51,6 +54,5 @@ Upon pressing any button, the Knight Ryder sequence will start up, indicating th
 
 ## 3. Enjoy!
 Challenge your brain, and enjoy playing Simon!
-
 
 
