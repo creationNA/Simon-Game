@@ -1,7 +1,7 @@
 # Simon-Game
 This is a term project that I built for the class ENSE 352: Fundamentals of Computer Systems Architecture
 
-#Video Showcase
+# Video Showcase
 https://www.youtube.com/watch?v=5UjCeziL5CU&t=4s&ab_channel=AaronB
 
 
