@@ -7,6 +7,7 @@ https://www.youtube.com/watch?v=5UjCeziL5CU&t=4s&ab_channel=AaronB
 
 
 **Important Note**
+<br>
 **The video currently excludes the following:**
 1. The current code provided in this file has implemented the "Knight Ryder" sequence when the user presses the button to reset/start a new game In the video, the "Knight Ryder" sequence is not shown when you restart the game. The newest version of the code **fixes** this.
 
