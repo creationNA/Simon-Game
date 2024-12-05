@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <time.h>
 #define NUMBER_OF_LEDS 4
+int seed = 0;
 
 void delay_ms(int delay);
 
@@ -13,7 +14,6 @@ void setup(){
     // Configure PA0, PA1, PA4 as outputs (50 MHz, General-purpose output push-pull)
     GPIOA->CRL = 0x00030033;
 
-    // Configure PB0 as output (50 MHz, General-purpose output push-pull)
     // Configure PB4 and PB6 as inputs with pull-up/pull-down
     GPIOB->CRL = 0x04040003;
 
@@ -62,10 +62,10 @@ int check_button(int led){
 // Function to flash all LEDs as feedback for success
 void success_feedback(){
     for (int i = 0; i < 4; i++) {
-        GPIOA->ODR = 0x1F; // Turn on all LEDs on GPIOA
+        GPIOA->ODR = 0x1F; 
         GPIOB->ODR |= (1 << 0); // Turn on PB0
         delay_ms(100);
-        GPIOA->ODR = 0x00; // Turn off all LEDs on GPIOA
+        GPIOA->ODR = 0x00; 
         GPIOB->ODR &= ~(1 << 0); // Turn off PB0
         delay_ms(100);
     }
@@ -73,14 +73,14 @@ void success_feedback(){
 
 void failure_feedback() {
     for (int i = 0; i < 2; i++) { 
-        // Flash left two LEDs (PA0 and PA1)
+        // Flash Left Group LEDs (PA0 and PA1)
         GPIOA->ODR = (1 << 0) | (1 << 1); // Turn on PA0 and PA1
         delay_ms(300);
         GPIOA->ODR = 0x00; // Turn off all LEDs
         GPIOB->ODR &= ~(1 << 0); // Ensure PB0 is off
         delay_ms(300);
 
-        // Flash right two LEDs (PA4 and PB0)
+        // Flash Right Group LEDs (PA4 and PB0)
         GPIOA->ODR = (1 << 4); // Turn on PA4
         GPIOB->ODR |= (1 << 0); // Turn on PB0
         delay_ms(300);
@@ -94,78 +94,64 @@ void failure_feedback() {
 
 
 
-
-
-
-void scannerPattern(){
-	 while (1){
-        //  Scanner pattern
-		 //GPIOB->IDR & (1 << n) checks the state of a specific pin (e.g., PB4 for 1 << 4). ! inverts the result, so we get true if the button is pressed (low).
+int scannerPattern(){
+	 int local_seed = 0	;
+	 while (1) { // Infinite loop for the Knight Rider sequence
         // Forward scanning
+				local_seed++;
         GPIOA->ODR = (1 << 0); // Turn on PA0
         delay_ms(99);
+        if (check_button(0) || check_button(1) || check_button(2) || check_button(3)) break; 
         GPIOA->ODR &= ~(1 << 0); // Turn off PA0
-        if (!(GPIOB->IDR & (1 << 4)) || !(GPIOB->IDR & (1 << 6)) || !(GPIOB->IDR & (1 << 8)) || !(GPIOB->IDR & (1 << 9))) {
-            GPIOA->ODR = 0x00; //Turns off all of the LED's
-            GPIOB->ODR &= ~(1 << 0);
-            break; // Exit beginning sequence to start the game
-        }
+				
+				local_seed++;
         GPIOA->ODR = (1 << 1); // Turn on PA1
         delay_ms(99);
+        if (check_button(0) || check_button(1) || check_button(2) || check_button(3)) break;
         GPIOA->ODR &= ~(1 << 1); // Turn off PA1
-        if (!(GPIOB->IDR & (1 << 4)) || !(GPIOB->IDR & (1 << 6)) || !(GPIOB->IDR & (1 << 8)) || !(GPIOB->IDR & (1 << 9))) {
-            GPIOA->ODR = 0x00;
-            GPIOB->ODR &= ~(1 << 0);
-            break;
-        }
+		 
+				local_seed++;
         GPIOA->ODR = (1 << 4); // Turn on PA4
         delay_ms(99);
+        if (check_button(0) || check_button(1) || check_button(2) || check_button(3)) break;
         GPIOA->ODR &= ~(1 << 4); // Turn off PA4
-
-        if (!(GPIOB->IDR & (1 << 4)) || !(GPIOB->IDR & (1 << 6)) || !(GPIOB->IDR & (1 << 8)) || !(GPIOB->IDR & (1 << 9))) {
-            GPIOA->ODR = 0x00;
-            GPIOB->ODR &= ~(1 << 0);
-            break;
-        }
-
+		 
+				local_seed++;
         GPIOB->ODR = (1 << 0); // Turn on PB0
         delay_ms(99);
+        if (check_button(0) || check_button(1) || check_button(2) || check_button(3)) break;
         GPIOB->ODR &= ~(1 << 0); // Turn off PB0
 
-        if (!(GPIOB->IDR & (1 << 4)) || !(GPIOB->IDR & (1 << 6)) || !(GPIOB->IDR & (1 << 8)) || !(GPIOB->IDR & (1 << 9))) {
-            GPIOA->ODR = 0x00;
-            GPIOB->ODR &= ~(1 << 0);
-            break;
-        }
         // Backward scanning
+				local_seed++;
         GPIOA->ODR = (1 << 4); // Turn on PA4
         delay_ms(99);
+        if (check_button(0) || check_button(1) || check_button(2) || check_button(3)) break;
         GPIOA->ODR &= ~(1 << 4); // Turn off PA4
-
-        if (!(GPIOB->IDR & (1 << 4)) || !(GPIOB->IDR & (1 << 6)) || !(GPIOB->IDR & (1 << 8)) || !(GPIOB->IDR & (1 << 9))) {
-            GPIOA->ODR = 0x00;
-            GPIOB->ODR &= ~(1 << 0);
-            break;
-        }
+				
+				local_seed++;
         GPIOA->ODR = (1 << 1); // Turn on PA1
         delay_ms(99);
+        if (check_button(0) || check_button(1) || check_button(2) || check_button(3)) break;
         GPIOA->ODR &= ~(1 << 1); // Turn off PA1
-        if (!(GPIOB->IDR & (1 << 4)) || !(GPIOB->IDR & (1 << 6)) || !(GPIOB->IDR & (1 << 8)) || !(GPIOB->IDR & (1 << 9))) {
-            GPIOA->ODR = 0x00;
-            GPIOB->ODR &= ~(1 << 0);
-            break;
-        }
+
+				local_seed++;
         GPIOA->ODR = (1 << 0); // Turn on PA0
         delay_ms(99);
+        if (check_button(0) || check_button(1) || check_button(2) || check_button(3)) break;
         GPIOA->ODR &= ~(1 << 0); // Turn off PA0
-        if (!(GPIOB->IDR & (1 << 4)) || !(GPIOB->IDR & (1 << 6)) || !(GPIOB->IDR & (1 << 8)) || !(GPIOB->IDR & (1 << 9))) {
-            GPIOA->ODR = 0x00;
-            GPIOB->ODR &= ~(1 << 0);
-            break;
-        }
     }
-	
+		
+    // Turn off all LEDs after exiting the loop
+    GPIOA->ODR = 0x00;
+    GPIOB->ODR &= ~(1 << 0);
+		
+		return local_seed;
+		
+		
 }
+
+
 
 void showRound(int roundfail) {
     GPIOA->ODR = 0x00;  // Turn off all LEDs initially
@@ -240,12 +226,12 @@ int main() {
     int sequence[10];
     int round;
     int restart;
-
     while (1) {
-        // Run Knight Rider pattern before starting or restarting the game
-        scannerPattern();
 
-        // Initialize game variables
+				
+        seed = scannerPattern();
+				srand(seed);
+       
         round = 1;
         restart = 0;
 
@@ -255,14 +241,14 @@ int main() {
         }
 
         // Game loop
-        while (round <= 4) {
+        while (round <= 10) {
             // Display the sequence for the current round
             for (int i = 0; i < round; i++) {
                 light_led(sequence[i]); // Light up LED
                 delay_ms(500);          // Wait for the user to memorize
-                GPIOA->ODR = 0x00;      // Turn off LEDs
+                GPIOA->ODR = 0x00;      
                 GPIOB->ODR &= ~(1 << 0);
-                delay_ms(250);          // Short pause between LEDs
+                delay_ms(250);          
             }
 
             // Player's turn to mimic the sequence
@@ -277,10 +263,10 @@ int main() {
                     // Check if any button is pressed
                     for (int button = 0; button < NUMBER_OF_LEDS; button++) {
                         if (check_button(button)) {
-                            if (button == sequence[i]) {
-                                // Correct button pressed
+                            if (button == sequence[i]) { //If you press the right button
+                                
                                 light_led(button); // Light up corresponding LED
-                                delay_ms(200);     // Brief visual confirmation
+                                delay_ms(200);     
                                 GPIOA->ODR = 0x00;
                                 GPIOB->ODR &= ~(1 << 0);
                                 correct_press = 1; // Mark as correct
@@ -301,22 +287,22 @@ int main() {
                 }
 
                 if (!correct_press && !restart) {
-                    // Timeout occurred
+                    
                     failure_feedback();
                     showRound(round); // Show the failed round
                     restart = 1;
                 }
 
                 if (restart) {
-                    break; // Exit the current round loop
+                    break; 
                 }
             }
 
             if (restart) {
                 break; // Restart the game after failure
             }
-
-            // Move to the next round without showing success feedback
+						delay_ms(500);
+      
             round++;
         }
 
@@ -327,10 +313,11 @@ int main() {
                 if (check_button(0) || check_button(1) || check_button(2) || check_button(3)) {
                     GPIOA->ODR = 0x00; // Clear LEDs
                     GPIOB->ODR &= ~(1 << 0);
+                    scannerPattern(); // Run Knight Rider pattern
                     break;
                 }
             }
-        } else if (round > 4) {
+        } else if (round > 10) {
             // Show success feedback after completing all rounds
             success_feedback();
             showRound(round - 1); // Show the winning round
@@ -338,14 +325,16 @@ int main() {
             // Wait for button press to restart
             while (1) {
                 if (check_button(0) || check_button(1) || check_button(2) || check_button(3)) {
-                    GPIOA->ODR = 0x00; // Clear LEDs
+                    GPIOA->ODR = 0x00; 
                     GPIOB->ODR &= ~(1 << 0);
+                    scannerPattern(); 
                     break;
                 }
             }
         }
     }
 }
+
 
 void delay_ms(int delay) {
     for (int i = 0; i < delay * 4000; i++) { }
